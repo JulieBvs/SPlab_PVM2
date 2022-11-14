@@ -88,7 +88,7 @@ For instance, if you have chosen to clone the Git repository in "/home/bavaisj/w
 
 ### Download the raw data
 
-Count tables can be downloaded from Gene Expression Omnibus (GEO) and uncompressed. The GEO accession number is [GSE133283](https://zenodo.org/badge/DOI/10.5281/zenodo.3946154.svg).
+Count tables can be downloaded from Gene Expression Omnibus (GEO) and uncompressed. The GEO accession number is [GSE133283](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE133283).
 
 To download and uncompress the data, use the following code:
 
