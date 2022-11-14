@@ -7,16 +7,25 @@
 **Authors:** C. Siret1, M. van Lessen2, J. Bavais1,3, H. W. Jeong4, S. K. Reddy Samawar5, K. Kapupara5, S. Wang1, M. Simic1, L. de Fabritus1, A. Tchoghandjian6, M. Fallet1, H. Huang1,7, S. Sarrazin1, M.H. Sieweke1,7, R. Stumm8, L. Sorokin5, R. H. Adams4, S. Schulte-Merker2, F. Kiefer4,9, S.A. van de Pavert1%
 
 1 Aix-Marseille Univ, CNRS, INSERM, Centre d’Immunologie de Marseille-Luminy (CIML), Marseille, France
+
 2 Institute for Cardiovascular Organogenesis and Regeneration, Faculty of Medicine, University of Münster, Münster, Germany
+
 3 Turing Centre for Living systems, Marseille, France
+
 4 Max Planck Institute for Molecular Biomedicine, Münster, Germany
+
 5 Institute of Physiological Chemistry and Pathobiochemistry and Cells in Motion Interfaculty Centre (CIMIC), University of Münster, Münster, Germany
+
 6 Aix-Marseille Univ, CNRS, INP, Inst Neurophysiopathol, Marseille, France
+
 7 Center for Regenerative Therapies Dresden (CRTD), Technische Universität Dresden, 01307 Dresden, Germany
+
 8 Institute of Pharmacology and Toxicology, Jena University Hospital, Jena, Germany
+
 9 University of Münster, European Institute for Molecular Imaging (EIMI) and Cells in Motion Interfaculty Centre (CIMIC), Münster, Germany 
 
 % Corresponding author: E-mail: vandepavert@ciml.univ-mrs.fr
+
 
 **Summary:**
 Perivascular macrophages (pvMs) are associated with cerebral vasculature and mediate brain drainage and immune regulation. Here, using reporter mouse models, whole brain and section immunofluorescence, flow cytometry, and single cell RNA sequencing, besides the Lyve1+F4/80+ CD206+CX3CR1+ pvMs we identified a CX3CR1– pvM population that shares phagocytic functions and location. Furthermore, the brain parenchyma vasculature mostly hosts Lyve1+MHCII–  pvMs with low to intermediate CD45 expression. Using the double Cx3cr1GFP x Cx3cr1-Cre;RosatdT reporter mice for finer mapping of the lineages, we establish that CD45lowCX3CR1– pvMs are derived from CX3CR1+ precursors and require PU.1 during their ontogeny. In parallel, the Cxcr4-CreErt2;Rosa26tdT lineage tracing model supports a bone marrow-independent replenishment of all Lyve1+ pvMs in the adult mouse brain. Lastly, flow cytometry and 3D immunofluorescence analysis uncover increased percentage of pvMs following photothrombotic induced stroke. Our results thus show that the parenchymal pvM population is more heterogenous than previously described, and includes a CD45low and CX3CR1negative pvM population.
