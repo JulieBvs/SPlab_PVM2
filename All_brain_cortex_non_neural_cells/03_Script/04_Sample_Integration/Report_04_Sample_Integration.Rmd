@@ -1,0 +1,332 @@
+---
+output:
+  html_document: 
+    theme: cerulean
+    toc: true
+    toc_float: true
+    toc_depth: 4
+---
+
+```{r setKnitrOptions, include=FALSE}
+knitr::opts_chunk$set(results='asis', echo = FALSE, error = TRUE, cache = FALSE, cache.comments = TRUE, fig.dim = c(7,7), autodep = TRUE)
+```
+
+
+
+
+```{r loadParamsAndDependencies, warning=FALSE, message=FALSE}
+### Define working folder (contains R/Rmd file for current sample, parent contains global project files)
+WORKING_DIR   = getwd();
+
+### Load parameters
+# Define an environment that will contain parameters
+paramsEnv = new.env();
+
+# Load file defining global (project) parameters in 'paramsEnv'
+source( file.path( WORKING_DIR, "..", "globalParams.R"), local = paramsEnv);
+
+# Load file defining local (sample) parameters eventually overriding global ones
+sampleParamsFilePath = file.path( WORKING_DIR, "..", "sampleParams.R");
+if(file.exists(sampleParamsFilePath)){
+  source( sampleParamsFilePath, local = paramsEnv);
+} else {
+  warning("The file 'sampleParams.R' containing sample-specific parameters is missing. The analysis will use global (project) parameters only.");
+}
+
+# Load file defining analysis parameters
+analysisParamsFilePath = file.path( WORKING_DIR, "analysisParams.R");
+if(file.exists(analysisParamsFilePath)) {
+  source( analysisParamsFilePath, local = paramsEnv);
+} else {
+  warning("The file 'analysisParamsFilePath.R' containing analysis-specific parameters is missing.");
+}
+
+# Assign loaded values to current environment (Not .GlobalEnv as it may not be the current one depending on where rendering is started from)
+invisible( lapply( ls( paramsEnv, all.names = TRUE), function(x, envir)
+  { 
+    assign( x = x, 
+            value = get( x, pos = paramsEnv), 
+            pos = envir)
+  }, 
+  environment()));
+
+### Load general Deps
+cat("<BR>WORKING_DIR=", WORKING_DIR)
+source( file.path( WORKING_DIR, "00_generalDeps.R"));
+
+# Import chunks from source files
+read_chunk( path=file.path( WORKING_DIR, "01_prepareData.R"));
+read_chunk( path=file.path( WORKING_DIR, "02_variableGenes.R"));
+read_chunk( path=file.path( WORKING_DIR, "03_dataIntegration.R"));
+read_chunk( path=file.path( WORKING_DIR, "04_macrophageSelection.R"));
+```
+
+---
+title: `r paste( GLOBAL_DESCRIPTION, ANALYSIS_STEP_NAME, sep ="<BR>")`
+---
+
+
+```{r initFunctions}
+
+### Create output directory
+dir.create( PATH_ANALYSIS_OUTPUT, showWarnings = FALSE);
+
+
+### Record starting time (for report and file names)
+startTime = Sys.time();
+startTimeReport   = format( startTime, "%Y %m %d %H:%M:%S")
+startTimeFileName = format( startTime, "%Y_%m_%d_%H_%M_%S")
+
+
+### Initialize utils
+
+# Create a hash for all parameters
+paramsHash = digest( paramsEnv, algo="murmur32");
+
+# Create a 'safe' unique prefix for output files
+# outputFilesPrefix = paste0( SCIENTIFIC_PROJECT_NAME, "_",     
+#                             EXPERIMENT_PROJECT_NAME, "_"
+#                             #startTimeFileName, "_",
+#                             #paramsHash, "_"
+#                             )
+
+# Set seed for pseudo random number generator
+set.seed(42);
+
+# Create a hidden empty heatmap to prevent heatmapr interference with plotly functions (bug ?)
+cat('<div style="display: none">');
+htmltools::tagList(main_heatmap(matrix(0)));
+cat('</div>');
+
+# Create a hidden plotly to prevent bug when rendering multiple plots in report
+cat('<div style="display: none">');
+htmltools::tagList(plot_ly(x = rnorm(10), type = "histogram"));
+cat('</div>');
+
+# Create a hidden empty heatmap to prevent iheatmap interference with plotly functions
+cat('<div style="display: none">');
+htmltools::tagList(iheatmap(rnorm(10)));
+cat('</div>');
+```
+
+
+
+
+## Primary analysis (QC)
+
+
+### Run informations {.tabset .tabset-fade}
+
+#### Run
+<center>
+```{r runInfo_run}
+pander( c( 'Date'     = startTimeReport,
+           'Hash'     = paramsHash));
+```
+</center>
+
+#### Parameters
+```{r runInfo_params}
+#showSimpleDT( paramsEnv); # Does not handle lists or nested lists easily
+listParams = as.list( paramsEnv);
+pander(listParams[order(names(listParams))]); # Show params in alphabetical order
+```
+
+#### System
+<center>
+```{r runInfo_sysInfo}
+showSimpleDT( Sys.info())
+```
+</center>
+
+#### R
+```{r runInfo_r}
+pander( sessionInfo());
+```
+
+<!-- Ending the tabset section -->
+### {.toc-ignore} 
+<br /><br />
+
+### Load data from quality control step
+```{r dataLoadFilterNormalize}
+<<loadData>>
+```
+<br /><br />
+
+
+### Highly variable genes
+#### Juvenile sample
+```{r findHVG_rep1}
+<<findVariableGenes_seuratMethodData_rep1>>
+<<findVariableGenes_summaryPlot_rep1>>
+<<findVariableGenes_summaryTable_rep1>>
+```
+
+#### Adult sample
+```{r findHVG_rep2}
+<<findVariableGenes_seuratMethodData_rep2>>
+<<findVariableGenes_summaryPlot_rep2>>
+<<findVariableGenes_summaryTable_rep2>>
+```
+
+#### Aged sample
+```{r findHVG_rep3}
+<<findVariableGenes_seuratMethodData_rep3>>
+<<findVariableGenes_summaryPlot_rep3>>
+<<findVariableGenes_summaryTable_rep3>>
+```
+<br /><br />
+
+
+### Data integration {.tabset .tabset-fade}
+This part shows the results of the combination of the data from the above replicate.
+```{r dataIntegrationProcessing}
+<<dataIntegration>>
+<<analysisIntegration>>
+```
+
+
+#### tSNE
+```{r visualizationIntegration_tSNE}
+useReduction='tsne'
+
+cat("\n<a href='#dimensionality-reduction'>");
+<<visualizationIntegration>>
+cat("</a> \n \n");
+
+rm("useReduction");
+```
+
+#### UMAP
+```{r visualizationIntegration_UMAP}
+useReduction='umap'
+
+cat("\n<a href='#dimensionality-reduction'>");
+<<visualizationIntegration>>
+cat("</a> \n \n");
+
+rm("useReduction");
+```
+
+<!-- Ending the tabset section -->
+### {.toc-ignore}
+
+
+
+### Cell clustering from individual timepoint analysis {.tabset .tabset-fade}
+#### Juvenile
+```{r cellClustering_Projection_juvenile}
+<<juvenile_clustering_umap>>
+```
+
+```{r cellClustering_Projection_juvenile_Splitted, fig.dim = c(3,3), out.width='25%'}
+<<juvenile_clustering_umap_splitted>>
+
+```
+
+#### Adult
+```{r cellClustering_Projection_adult}
+<<adult_clustering_umap>>
+```
+
+```{r cellClustering_Projection_adult_Splitted, fig.dim = c(3,3), out.width='25%'}
+<<adult_clustering_umap_splitted>>
+
+```
+
+#### Aged
+```{r cellClustering_Projection_aged}
+<<aged_clustering_umap>>
+```
+
+```{r cellClustering_Projection_aged_Splitted, fig.dim = c(3,3), out.width='25%'}
+<<aged_clustering_umap_splitted>>
+
+```
+
+<!-- Ending the tabset section -->
+### {.toc-ignore}
+
+
+
+
+### Cell clustering {.tabset .tabset-fade}
+```{r cellClusteringProcessing}
+<<cellClustering>>
+```
+
+
+#### tSNE
+```{r visualizationClustering_tSNE}
+useReduction='tsne'
+
+cat("\n<a href='#dimensionality-reduction'>");
+<<cellClustering_visualization>>
+cat("</a> \n \n");
+
+rm("useReduction");
+```
+
+#### UMAP
+```{r visualizationClustering_UMAP}
+useReduction='umap'
+
+cat("\n<a href='#dimensionality-reduction'>");
+<<cellClustering_visualization>>
+cat("</a> \n \n");
+
+rm("useReduction");
+```
+
+<!-- Ending the tabset section -->
+### {.toc-ignore}
+
+
+
+### Identify conserved marker genes
+#### Marker genes list
+```{r identifyConservedMarkerGenes}
+<<heterogeneity_conservedmarkerGenes>>
+<<heterogeneity_conservedmarkerGenes_table>>
+<<heterogeneity_conservedmarkerGenes_heatmap>>
+<<heterogeneity_markerGenes>>
+<<heterogeneity_markerGenes_table>>
+<<heterogeneity_markerGenes_heatmap>>
+```
+<br /><br />
+
+
+### Monitored genes
+#### Monitored genes heatmap
+```{r monitoredDotPlot}
+<<heterogeneity_monitoredGenes_dotplot>>
+```
+<br /><br />
+
+#### Monitored genes expression
+```{r monitoredFeaturePlot, out.width='50%'}
+<<heterogeneity_monitoredGenes_tsne_umap>>
+```
+<br /><br />
+
+#### Monitored genes expression
+```{r monitoredViolinPlot, out.width='50%'}
+<<heterogeneity_monitoredGenes_vlnplot>>
+```
+<br /><br />
+
+#### Monitored genes - density plot
+```{r monitoredDensityPlot, out.width='50%'}
+<<heterogeneity_monitoredGenes_densityplot>>
+```
+<br /><br />
+
+
+### Exporting results
+```{r saveSeuratObject}
+<<save_data>>
+<<extract_Lyve1_pos_cluster>>
+```
+<br /><br />
+
