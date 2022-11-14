@@ -19,7 +19,7 @@
 % Corresponding author: E-mail: vandepavert@ciml.univ-mrs.fr
 
 **Summary:**
-TODO: Add abstract
+Perivascular macrophages (pvMs) are associated with cerebral vasculature and mediate brain drainage and immune regulation. Here, using reporter mouse models, whole brain and section immunofluorescence, flow cytometry, and single cell RNA sequencing, besides the Lyve1+F4/80+ CD206+CX3CR1+ pvMs we identified a CX3CR1– pvM population that shares phagocytic functions and location. Furthermore, the brain parenchyma vasculature mostly hosts Lyve1+MHCII–  pvMs with low to intermediate CD45 expression. Using the double Cx3cr1GFP x Cx3cr1-Cre;RosatdT reporter mice for finer mapping of the lineages, we establish that CD45lowCX3CR1– pvMs are derived from CX3CR1+ precursors and require PU.1 during their ontogeny. In parallel, the Cxcr4-CreErt2;Rosa26tdT lineage tracing model supports a bone marrow-independent replenishment of all Lyve1+ pvMs in the adult mouse brain. Lastly, flow cytometry and 3D immunofluorescence analysis uncover increased percentage of pvMs following photothrombotic induced stroke. Our results thus show that the parenchymal pvM population is more heterogenous than previously described, and includes a CD45low and CX3CR1negative pvM population.
 
 DOI : TODO: Add DOI
 ---
@@ -86,14 +86,14 @@ To download and uncompress the data, use the following code:
 **On linux:**
 
     cd $WORKING_DIR
-    mkdir 00_RawData/
-    cd 00_RawData
-    
-    wget 'https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSM3904816&format=file&file=GSM3904816%5FAdult%2D1%5Fgene%5Fcounts%2Etsv%2Egz' -O GSM3904816_Adult-1_gene_counts.tsv.gz
-    gzip -d GSM3904816_Adult-1_gene_counts.tsv.gz
+    mkdir 01_RawData/
+    cd 01_RawData
     
     wget 'https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSM3904817&format=file&file=GSM3904817%5FAdult%2D2%5Fgene%5Fcounts%2Etsv%2Egz' -O GSM3904817_Adult-2_gene_counts.tsv.gz
     gzip -d GSM3904817_Adult-2_gene_counts.tsv.gz
+
+    wget 'https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSM3904818&format=file&file=GSM3904818%5FAdult%2D3%5Fgene%5Fcounts%2Etsv%2Egz' -O GSM3904818_Adult-3_gene_counts.tsv.gz
+    gzip -d GSM3904818_Adult-3_gene_counts.tsv.gz
 
     wget 'https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSM3904819&format=file&file=GSM3904819%5FAged%2D1%5Fgene%5Fcounts%2Etsv%2Egz' -O GSM3904819_Aged-1_gene_counts.tsv.gz
     gzip -d GSM3904819_Aged-1_gene_counts.tsv.gz
@@ -107,15 +107,18 @@ To download and uncompress the data, use the following code:
     wget 'https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSM3904824&format=file&file=GSM3904824%5FJuvenile%2D2%5Fgene%5Fcounts%2Etsv%2Egz' -O GSM3904824_Juvenile-2_gene_counts.tsv.gz
     gzip -d GSM3904824_Juvenile-2_gene_counts.tsv.gz
 
+    wget 'https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSM3904825&format=file&file=GSM3904825%5FJuvenile%2D3%5Fgene%5Fcounts%2Etsv%2Egz' -O GSM3904825_Juvenile-3_gene_counts.tsv.gz
+    gzip -d GSM3904825_Juvenile-3_gene_counts.tsv.gz
+
     wget 'https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSM3904826&format=file&file=GSM3904826%5FJuvenile%2D4%5Fgene%5Fcounts%2Etsv%2Egz' -O GSM3904826_Juvenile-4_gene_counts.tsv.gz
     gzip -d GSM3904826_Juvenile-4_gene_counts.tsv.gz
 
 Once done, you may obtain the following structure.
 
     All_brain_cortex_non_neural_cells
-    └── 00_RawData
-        ├── GSM3904816_Adult-1_gene_counts.tsv
-        ├── GSM3904817_Adult-2_gene_counts.tsv
+    └── 01_RawData
+        ├── GSM3904816_Adult-2_gene_counts.tsv
+        ├── GSM3904817_Adult-3_gene_counts.tsv
         ├── GSM3904819_Aged-1_gene_counts.tsv
         ├── GSM3904820_Aged-2_gene_counts.tsv
         ├── GSM3904823_Juvenile-1_gene_counts.tsv
@@ -123,141 +126,84 @@ Once done, you may obtain the following structure.
         ├── GSM3904825_Juvenile-3_gene_counts.tsv
         └── GSM3904826_Juvenile-4_gene_counts.tsv
 
-### Download the reference files
 
-The study uses references (genome annotations) you have to download. The annotations used during the study are available on Zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3949849.svg)](https://doi.org/10.5281/zenodo.3949849). Use the following command to download the tarball file and uncompress it.
+### Download the Docker
 
-Note: Since the reference files are used for the 4 single-cell samples analysis, they must be present in all the sample folder in the same 01_Reference subfolder. Instead of copying the files, we will create symbolic links:
-
-**On linux:**
-
-    cd $WORKING_DIR
-    wget https://zenodo.org/record/3949849/files/SPlab_BecomingLTi_01_Reference.tar.gz?download=1 -O SPlab_BecomingLTi_01_Reference.tar.gz
-    tar zxvf SPlab_BecomingLTi_01_Reference.tar.gz
-    ln -s Embryo_Stage13.5_FetalLiver/01_Reference Embryo_Stage13.5_Periphery_CellRangerV3/01_Reference
-    ln -s Embryo_Stage13.5_FetalLiver/01_Reference Embryo_Stage14.5_FetalLiver/01_Reference
-    ln -s Embryo_Stage13.5_FetalLiver/01_Reference Embryo_Stage14.5_Periphery_CellRangerV3/01_Reference
-
-These commands will create 4 sub-folders named 01_Reference:
-
-    BecomingLTi
-    ├── Embryo_Stage13.5_FetalLiver
-    │   └── 01_Reference
-    ├── Embryo_Stage13.5_Periphery_CellRangerv3
-    │   └── 01_Reference
-    ├── Embryo_Stage14.5_FetalLiver
-    │   └── 01_Reference
-    └── Embryo_Stage14.5_Periphery_CellRangerv3
-        └── 01_Reference
-
-### Download the Docker and Singularity images
-
-Docker image tar file and Singularity img files are stored on Zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3949849.svg)](https://doi.org/10.5281/zenodo.3949849). Open a shell command and change dir to the root of the cloned Git repository (WORKING_DIR). Then execute the following commands to download the tarball file and untar  it:
+Docker image tar file is stored on Zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7319580.svg)](https://doi.org/10.5281/zenodo.7319580). Open a shell command and change dir to the root of the cloned Git repository (WORKING_DIR). Then execute the following commands to download the tarball file and untar it:
 
 **On linux:**
 
     cd $WORKING_DIR
-    wget https://zenodo.org/record/3949849/files/SPlab_BecomingLTi_02_containers.tar.gz?download=1 -O SPlab_BecomingLTi_02_containers.tar.gz
-    tar zxvf SPlab_BecomingLTi_02_containers.tar.gz
+    mkdir 02_Container/
+    cd 02_Container
+    wget https://zenodo.org/record/7319580/files/splab_pvm2_seurat4.1.0_integration.tar?download=1 -O splab_pvm2_seurat4.1.0_integration.tar
 
-These commands will create 2 sub-folders named 02_Container:
+These commands will create one sub-folder named 02_Container and containing the docker image tar file:
 
-    BecomingLTi
-    ├── Embryo_Bulk_Stage13.5_2tissues
-    │   └── 02_Container
-    └── Embryo_Stage13.5_FetalLiver
-        └── 02_Container
+    All_brain_cortex_non_neural_cells
+    └── 02_Container
+        └── splab_pvm2_seurat4.1.0_integration.tar
 
-The first one contains a Docker image tar file used for the bulk RNA-seq analysis. The second one contains the Singularity images for the single-cell RNA-seq analysis. Since the singularity images are used for the 4 single-cell samples analysis, they must be present in all the sample folder in the same 02_Container subfolder. Instead of copying the image files, we will create symbolic links:
 
-**On linux:**
+### Install Docker
 
-    cd $WORKING_DIR
-    ln -s Embryo_Stage13.5_FetalLiver/02_Container Embryo_Stage13.5_Periphery_CellRangerV3/02_Container
-    ln -s Embryo_Stage13.5_FetalLiver/02_Container Embryo_Stage14.5_FetalLiver/02_Container
-    ln -s Embryo_Stage13.5_FetalLiver/02_Container Embryo_Stage14.5_Periphery_CellRangerV3/02_Container
-
-### Install Docker and Singularity
-
-You need to install Docker and Singularity v2.6 on your system.
-
-- To install Docker, follow the instructions here : https://docs.docker.com/get-docker/
-
-- To install Singularity v2.6, follow the instructions here : https://sylabs.io/guides/2.6/admin-guide/
+You need to install Docker on your system following the instructions here : https://docs.docker.com/get-docker/
 
 ### Load docker images on the system
 
-In order to execute analysis of the bulk RNA-seq, you must load the provided docker image onto your Docker. Docker must be installed on your system. 
+In order to execute analysis, you must load the provided docker image onto your Docker. Docker must be installed on your system. 
 See https://docs.docker.com/install/ for details on Docker installation.
 Open a shell command and type:
 
 **On linux:**
 
-    docker load -i $WORKING_DIR/Embryo_Bulk_Stage13.5_2tissues/02_Container/splab_ilcyou_deg_gsea.tar
+    docker load -i $WORKING_DIR/All_brain_cortex_non_neural_cells/02_Container/splab_pvm2_seurat4.1.0_integration.tar
 
 This command may take some time. If you encounter an issue loading some docker image layer, try again. Sometimes issue would be resolved. 
 
-### Install Snakemake
-
-If you want to take advantage of the workflow management we used for the single-cell RNA-seq analysis, you have to install Snakemake. See the official instruction and use your prefered solution:
-
-https://snakemake.readthedocs.io/en/stable/getting_started/installation.html
-
----
----
 
 ## Run the analysis
 
-There are two types of analysis in this study : bulk RNA-seq and single-cell RNA-seq. The bulk RNA-seq analysis uses the Docker image you loaded. The single-cell RNA-seq analysis uses the Singularity images and optionnaly Snakemake.
-
-### Run the bulk RNA-seq analysis
-
-The RNA-seq analysis are in two steps (step1 and step2). The first step make the QC, study the differentially expressed genes and their functionnal enrichment. The second step study the pattern of evolution of group of genes along the cell types (see article methods).
-
-To run the step1 analysis, use the following command:
+### Quality control
+First, you need to run the quality control step for each datasets following these command lines:
 
 **On Linux:**
 
-    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_ilcyou_deg_gsea 'cd $WORKING_DIR/Embryo_Bulk_Stage13.5_2tissues/03_Script/step1;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/01_QC_Adult_rep2;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/01_QC_Adult_rep3;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/01_QC_Aged_rep1;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/01_QC_Aged_rep2;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/01_QC_Juvenile_rep1;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/01_QC_Juvenile_rep2;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/01_QC_Juvenile_rep3;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/01_QC_Juvenile_rep4;Rscript launch_reports_compilation.R'
 
-To run the step2 analysis, use the following command:
+### Merge datasets from same time point
+Then, datasets replicates from same time point are merged giving three seurat object:
 
 **On Linux:**
 
-     docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_ilcyou_deg_gsea 'cd $WORKING_DIR/Embryo_Bulk_Stage13.5_2tissues/03_Script/step2;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/02_GlobalHeterogeneity_Adult_Merge;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/02_GlobalHeterogeneity_Aged_Merge;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/02_GlobalHeterogeneity_Juvenile_Merge;Rscript launch_reports_compilation.R'
 
-Each analysis will generate a result in $WORKING_DIR/Embryo_Bulk_Stage13.5_2tissues/05_output/step1 or $WORKING_DIR/Embryo_Bulk_Stage13.5_2tissues/05_output/step2.
-In the output of the analysis, you will find a HTML file that contains the report of the analysis, with all figures. Some extra file are generated to export data in plain text.
+### Integration
+Those three seurat object are integrated and analysed following steps described in the Methods of the paper.
+
+**On Linux:**
+
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/04_Sample_Integration;Rscript launch_reports_compilation.R'
+
+### Lyve1+ subcluster analysis
+Finally, Lyve1+ cluster is extracted and re-analysed.
+
+**On Linux:**
+
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/05_Lyve1_Cluster_From_Sample_Integration;Rscript launch_reports_compilation.R'
+    docker run -v $WORKING_DIR:$WORKING_DIR -e WORKING_DIR=$WORKING_DIR splab_pvm2_seurat4.1.0_integration 'cd $WORKING_DIR/All_brain_cortex_non_neural_cells/03_Script/06_Lyve1_Cluster_From_Sample_Integration_Without_Apoptosis;Rscript launch_reports_compilation.R'
 
 
-### Run the single-cell RNA-seq analysis
 
-The study contains 4 samples of single-cell RNA-seq data. Each sample have 5 step of analysis you will find the R script files in the subfolder 03_Script. The 5 steps are:
 
- * 01_QC : General quality control and bad cell removal
- * 02_GlobalHeterogeneity : First study of cell heterogeneity and sample contamination by undesired cell types
- * 03_GlobalHeterogeneity_NoContamination : Study of cell heterogeniety in absence of contamination
- * 04_Dynamics_Monocle : analysis of the cellular process dynamics using pseudotime analysis by Monocle
- * 05_Dynamics_RNAVelocity : analysis of the cellular process dynamics using RNA velocity (Velocyto)
 
-Each step of analysis generates its own HTML report file and several output files. Some output files of some steps are used by other steps, making a complete workflow of analysis.
-
-The simpliest way to run the complete single-cell analysis of a sample is to use the Snakemake workflow dedicated to each sample. The workflow is controled by a snakefile stored in the 04_Workflow subfolder of each sample folder. This workflow uses Singularity images (see above) to control the software environment for each analysis step. So you need both Snakemake and Singularity installed on your system to use this workflow.
-
-In order to use the snakemake workflow, please type first the following commands:
-
-     cd $WORKING_DIR
-     ln -s Embryo_Stage13.5_FetalLiver/04_Workflow/snakefile.yml Embryo_Stage13.5_FetalLiver/snakefile.yml
-     ln -s Embryo_Stage13.5_Periphery_CellRangerV3/04_Workflow/snakefile.yml Embryo_Stage13.5_Periphery_CellRangerV3/snakefile.yml
-     ln -s Embryo_Stage14.5_FetalLiver/04_Workflow/snakefile.yml Embryo_Stage14.5_FetalLiver/snakefile.yml
-     ln -s Embryo_Stage14.5_Periphery_CellRangerV3/04_Workflow/snakefile.yml Embryo_Stage14.5_Periphery_CellRangerV3/snakefile.yml
-
-To run the analysis for the Embryo_Stage13.5_FetalLiver (for instance), then run the following commands:
-
-Note: you have to manually change the "$WORKING_DIR" string in the snakemake command below by the value of the environment variable (i.e the path where you clone the project) because snakemake may not interpret the variable name correctly:
-
-     cd $WORKING_DIR/Embryo_Stage13.5_FetalLiver
-     snakemake -r --snakefile snakefile.yml --use-singularity --singularity-args "-B $WORKING_DIR:$WORKING_DIR"
-     
-To execute the analysis of the other sample, simply change folder to the target sample and run again the same snakemake command.
 
