@@ -1,0 +1,42 @@
+# #########################################
+# This script reads the sc10x data from
+# QC and filtering analysis
+# #########################################
+
+
+# READ DATA
+# ---------
+
+## @knitr loadData
+
+# Select Lyve1+ cluster identified in previous step
+sc10x.rna.seurat = readRDS( file.path( PATH_SEURAT_INTEGRATION))
+LyvePos_cl_barcode <- read.table(PATH_CELL_BC_CLUSTER_LYVE1, header = TRUE)
+LyvePos_cl_barcode <- as.vector(LyvePos_cl_barcode[,"x"])
+
+sc10x.rna.seurat <- subset(sc10x.rna.seurat, cells = LyvePos_cl_barcode)
+cat("<br>Number of cells in Lyve1+ cluster : ", length( Cells( sc10x.rna.seurat)))
+
+
+
+# Scale data
+DefaultAssay(sc10x.rna.seurat) <- "integrated"
+sc10x.rna.seurat <- ScaleData(object = sc10x.rna.seurat)
+
+MONITORED_GENES <- MARKERS_ALL
+# Remove eventual NULL (empty) list elements from list of genes to be monitored
+monitoredGroupEmpty = sapply( MONITORED_GENES, is.null);
+if(any( monitoredGroupEmpty)) warning( paste("Following group(s) of genes to be monitored will be ignored because empty:", paste( names(monitoredGroupEmpty)[monitoredGroupEmpty], collapse=" - ")));
+MONITORED_GENES = MONITORED_GENES[! monitoredGroupEmpty];
+
+# Check whether genes in MONITORED_GENES are actually found in assay object (case mismatch is not corrected anymore to avoid genes names confusion between species)
+matchMonitoredGenes = match( ( unlist( MONITORED_GENES)), ( rownames( GetAssayData( sc10x.rna.seurat))));
+monitoredGenesNotFound = unique( unlist( MONITORED_GENES)[is.na( matchMonitoredGenes)]);
+if(any( is.na( matchMonitoredGenes))) warning( paste( "Following gene(s) to be monitored could not be found in experimental data and will be ignored:", paste( monitoredGenesNotFound, collapse=" - ")));
+
+# Replace names by names found in assay (correcting eventual case mismatch, NA for not found)
+MONITORED_GENES = relist( rownames( GetAssayData( sc10x.rna.seurat))[ matchMonitoredGenes ], skeleton = MONITORED_GENES); # Does not work with NULL list elements (removed earlier)
+
+# Finally remove names that did not match
+MONITORED_GENES = lapply( MONITORED_GENES, na.omit)
+
